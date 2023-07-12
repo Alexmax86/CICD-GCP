@@ -3,5 +3,8 @@ steps:
     args: ['build', '-t', 'gcr.io/fleet-passkey-391614/my-image:live', '.']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/fleet-passkey-391614/my-image:live']
+  - name: gcr.io/cloud-builders/gcloud
+    args: [ compute, instance-groups, managed, rolling-action, replace, main-machines, --region=us-central1-a , --max-unavailable=1, --max-surge=1]
+
 
     
