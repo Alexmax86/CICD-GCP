@@ -9,7 +9,7 @@ const HOST = '0.0.0.0';
 // App
 const app = express();
 app.get('/', (req, res) => {
-  res.send('Hello World. This is an automatic restart');
+  res.send('Hello World. This is Continuous Deployement example');
 });
 
 app.listen(PORT, HOST, () => {
