@@ -1,7 +1,7 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/fleet-passkey-391614/my-image:latest', '.']
+    args: ['build', '-t', 'gcr.io/fleet-passkey-391614/my-image:live', '.']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/fleet-passkey-391614/my-image:latest']
+    args: ['push', 'gcr.io/fleet-passkey-391614/my-image:live']
 
     
