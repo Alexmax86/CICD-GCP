@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const gcpMetadata = require('gcp-metadata');
 
 // Constants
 const PORT = 80;
@@ -14,12 +15,14 @@ const app = express();
 // App config
 app.set('view engine', 'ejs');
 
+metadataVariable = await getMetadata();
+
 app.get('/home', (req, res) => {
   
 });
 
-app.get('/', (req, res) => {  
-  res.render('home', { variableName: "Red Rabbit" });  
+app.get('/', (req, res) => {    
+  res.render('home', { variableName: metadataVariable });  
 });
 
 //const mysql = require('mysql');
@@ -43,7 +46,12 @@ connection.connect((error) => {
 
 
 // Listen command 
- 
+
+async function getMetadata(){
+  let metadataVariable = await gcpMetadata.project('attributes/metaVariable')
+  return metadataVariable;
+}
+
 app.listen(PORT, HOST, () => {
   console.log(`Running on http://${HOST}:${PORT}`);
 });
