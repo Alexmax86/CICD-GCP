@@ -33,7 +33,7 @@ app.get('/messages', async (req,res) => {
 async function dbConnect(){
   //get Metadata
   const metadata = await getMetadata();
-  console.log("[[[Debugger]]] Logging metadata: " + metadata)
+  console.log("[[[Debugger]]] Logging metadata: " + JSON.stringify(metadata))
   //Establish connection
   const connection = mysql.createConnection({
     host: metadata.sqlHost,
@@ -44,8 +44,7 @@ async function dbConnect(){
 
   connection.connect((error) => {
     if (error) {
-      console.error('Error connecting to the database:', error);
-      console.log("Connection string: " + metadata)
+      console.error('Error connecting to the database:', error);      
       return;
     }
     console.log('Connected to the database!');
