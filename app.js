@@ -76,11 +76,16 @@ async function dbConnect(){
 
 async function getMetadata(){
   try{
+    let sqlHost = await gcpMetadata.project('attributes/sql-host')
+    let sqlUser = await gcpMetadata.project('attributes/sql-user')
+    let sqlP = await gcpMetadata.project('attributes/sql-p')
+    let sqlDb = await gcpMetadata.project('attributes/sql-db')
+
     const metadata = {
-      sqlHost: (async () => await gcpMetadata.project('attributes/sql-host'))(),
-      sqlUser: (async () => await gcpMetadata.project('attributes/sql-user'))(),
-      sqlP: (async () => await gcpMetadata.project('attributes/sql-p'))(),
-      sqlDb: (async () => await gcpMetadata.project('attributes/sql-db'))()
+      sqlHost: sqlHost,
+      sqlUser: sqlUser,
+      sqlP: sqlP,
+      sqlDb: sqlDb
     };
     console.log("Metadata fetched: " + JSON.stringify(metadata))
     return metadata;  
