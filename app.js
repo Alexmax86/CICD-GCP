@@ -82,6 +82,7 @@ async function getMetadata(){
       sqlP: (async () => await gcpMetadata.project('attributes/sql-p'))(),
       sqlDb: (async () => await gcpMetadata.project('attributes/sql-db'))()
     };
+    console.log("Metadata fetched: " + JSON.stringify(metadata))
     return metadata;  
   }
 
