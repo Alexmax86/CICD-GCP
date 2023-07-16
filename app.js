@@ -18,12 +18,11 @@ app.get('/home', (req, res) => {
   
 });
 
-app.get('/', (req, res) => {
-  const myVariable = 'Red Rabbit';
-  res.render('home', { variableName: myVariable });  
+app.get('/', (req, res) => {  
+  res.render('home', { variableName: "Red Rabbit" });  
 });
 
-const mysql = require('mysql');
+//const mysql = require('mysql');
 
 //DB connection
 /*
