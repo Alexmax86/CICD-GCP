@@ -33,7 +33,7 @@ app.get('/messages', async (req,res) => {
 async function dbConnect(){
   //get Metadata
   const metadata = await getMetadata();
-  
+  console.log("[[[Debugger]]] Logging metadata: " + metadata)
   //Establish connection
   const connection = mysql.createConnection({
     host: metadata.sqlHost,
@@ -45,6 +45,7 @@ async function dbConnect(){
   connection.connect((error) => {
     if (error) {
       console.error('Error connecting to the database:', error);
+      console.log("Connection string: " + metadata)
       return;
     }
     console.log('Connected to the database!');
@@ -76,10 +77,10 @@ async function dbConnect(){
 
 async function getMetadata(){
   const metadata = {
-    sqlDb: (async () => await gcpMetadata.project('attributes/sql-db'))(),
     sqlHost: (async () => await gcpMetadata.project('attributes/sql-host'))(),
-    sqlP: (async () => await gcpMetadata.project('attributes/sql-p'))(),
     sqlUser: (async () => await gcpMetadata.project('attributes/sql-user'))(),
+    sqlP: (async () => await gcpMetadata.project('attributes/sql-p'))(),
+    sqlDb: (async () => await gcpMetadata.project('attributes/sql-db'))()
   };
 
   return metadata;  
