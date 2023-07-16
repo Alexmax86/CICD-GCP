@@ -15,13 +15,12 @@ const app = express();
 // App config
 app.set('view engine', 'ejs');
 
-let metadataVariable = getMetadata();
-
 app.get('/home', (req, res) => {
   
 });
 
-app.get('/', (req, res) => {    
+app.get('/', async (req, res) => {  
+  let metadataVariable = await gcpMetadata.project('attributes/metaVariable')  
   res.render('home', { variableName: metadataVariable });  
 });
 
@@ -46,11 +45,6 @@ connection.connect((error) => {
 
 
 // Listen command 
-
-async function getMetadata(){
-  let metadataVariable = await gcpMetadata.project('attributes/metaVariable')
-  return metadataVariable;
-}
 
 app.listen(PORT, HOST, () => {
   console.log(`Running on http://${HOST}:${PORT}`);
