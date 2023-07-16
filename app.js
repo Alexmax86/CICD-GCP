@@ -50,7 +50,7 @@ async function dbConnect(){
     console.log('Connected to the database!');
     // Execute a SQL statement
   
-  const sql = "INSERT INTO messages (name, message) VALUES ('John Doe', 'Hi, I am John Doe and this a from the app'";
+  const sql = "INSERT INTO messages (name, message) VALUES ('John Doe', 'Hi, I am John Doe and this a from the app')";
   
   connection.query(sql, (error, results) => {
     if (error) {
