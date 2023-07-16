@@ -75,14 +75,22 @@ async function dbConnect(){
 }
 
 async function getMetadata(){
-  const metadata = {
-    sqlHost: (async () => await gcpMetadata.project('attributes/sql-host'))(),
-    sqlUser: (async () => await gcpMetadata.project('attributes/sql-user'))(),
-    sqlP: (async () => await gcpMetadata.project('attributes/sql-p'))(),
-    sqlDb: (async () => await gcpMetadata.project('attributes/sql-db'))()
-  };
+  try{
+    const metadata = {
+      sqlHost: (async () => await gcpMetadata.project('attributes/sql-host'))(),
+      sqlUser: (async () => await gcpMetadata.project('attributes/sql-user'))(),
+      sqlP: (async () => await gcpMetadata.project('attributes/sql-p'))(),
+      sqlDb: (async () => await gcpMetadata.project('attributes/sql-db'))()
+    };
+    return metadata;  
+  }
 
-  return metadata;  
+  catch(error){
+    console.log("Async/Await error: " + error)
+  }
+  
+
+  
 }
 
 
