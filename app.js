@@ -15,7 +15,7 @@ const app = express();
 // App config
 app.set('view engine', 'ejs');
 
-metadataVariable = await getMetadata();
+metadataVariable = getMetadata();
 
 app.get('/home', (req, res) => {
   
