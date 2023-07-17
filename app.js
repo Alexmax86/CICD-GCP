@@ -3,6 +3,9 @@
 const express = require('express');
 const gcpMetadata = require('gcp-metadata');
 const mysql = require('mysql');
+const db = require('./db')
+
+
 
 // Constants
 const PORT = 80;
@@ -19,6 +22,11 @@ app.set('view engine', 'ejs');
 app.get('/home', (req, res) => {
   
 });
+
+console.log(process.env.NODE_ENV)
+if (process.env.NODE_ENV === 'development'){
+  console.log("We are in dev environment!")
+}
 
 app.get('/', async (req, res) => {  
   let metadataVariable = await gcpMetadata.project('attributes/metaVariable')
