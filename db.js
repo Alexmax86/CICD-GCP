@@ -1,10 +1,11 @@
- const dbConfig = require('./dbconfiguration.json');
+
  const mysql = require('mysql');
  const gcpMetadata = require('gcp-metadata');
 
  async function getDbConnection(){
     let dbConnection = null
     if (process.env.NODE_ENV === 'development'){
+      const dbConfig = require('./dbconfiguration.json');
         console.log("We are in dev environment!")
         try{
             dbConnection = await mysql.createConnection(dbConfig)
