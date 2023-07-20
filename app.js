@@ -4,6 +4,7 @@ const express = require('express');
 const gcpMetadata = require('gcp-metadata');
 const mysql = require('mysql');
 const db = require('./db')
+const bodyParser = require('body-parser');
 
 
 
@@ -19,6 +20,12 @@ const app = express();
 // App config
 app.set('view engine', 'ejs');
 
+// Parse URL-encoded bodies
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Parse JSON bodies
+app.use(bodyParser.json());
+
 app.get('/home', (req, res) => {
   
 });
@@ -29,106 +36,73 @@ if (process.env.NODE_ENV === 'development'){
 }
 
 app.get('/', async (req, res) => {  
-  let metadataVariable = await gcpMetadata.project('attributes/metaVariable')
-  dbConnect();  
-  res.render('home', { variableName: metadataVariable });  
+  let dbConnection = await db.getDbConnection()
+  let query = 'SELECT * FROM messages'
+  let entries = null
+  await dbConnection.query(query, (error, result) => {
+    
+    entries = result
+    let formattedEntries = entries.map(row => ({ ...row })).reverse();
+    console.log(formattedEntries)
+    res.render('home', { entries: formattedEntries }); 
+  })
+  dbConnection.end()
+  
+   
 });
 
 app.get('/messages', async (req,res) => {
-
+  let dbConnection = await db.getDbConnection()
+  let query = 'SELECT * FROM messages'
+  dbConnection.query(query, (error, result) => {
+    res.json(result)
+  })
+  dbConnection.end()
 })
 
-async function dbConnect(){
-  //get Metadata
-  const metadata = await getMetadata();
-  console.log("[[[Debugger]]] Logging metadata: " + JSON.stringify(metadata))
-  //Establish connection
-  const connection = mysql.createConnection({
-    host: metadata.sqlHost,
-    user: metadata.sqlUser,
-    password: metadata.sqlP,
-    database: metadata.sqlDb
-  });
+app.post('/messages', async (req, res) => {
+    console.log("Logger: " + JSON.stringify(req.body));
+    const dbConnection = await db.getDbConnection();
 
-  connection.connect((error) => {
-    if (error) {
-      console.error('Error connecting to the database:', error);      
-      return;
-    }
-    console.log('Connected to the database!');
-    // Execute a SQL statement
-  
-  const sql = "INSERT INTO messages (name, message) VALUES ('John Doe', 'Hi, I am John Doe and this a from the app')";
-  
-  connection.query(sql, (error, results) => {
-    if (error) {
-      console.error('Error executing the statement:', error);
-      return;
-    }
-    console.log('Query results:', results);
-  });
+    // Extract the message data from the request body
+    const { name, message } = req.body;
 
-  // Close the connection
-  connection.end((error) => {
-    if (error) {
-      console.error('Error closing the database connection:', error);
-      return;
-    }
-    console.log('Connection closed.');
-  });
-  });
+    // Construct the SQL query to insert the new message
+    const query = `INSERT INTO messages (name, message) VALUES (?, ?)`;
+
+    // Execute the query
+    dbConnection.query(query, [name, message], (error, result) => {
+      if (error) {
+        console.error('Error posting the message:', error);
+        res.status(500).send('Internal Server Error');
+      } else {
+        res.redirect('/')
+        
+      }
+    });
+
+  })
+
+
+  app.get('/delete', async (req,res) => {
+    let dbConnection = await db.getDbConnection()
+    let query = 'TRUNCATE TABLE messages'
+    dbConnection.query(query, (error, result) => {
+      res.json(result)
+    })
+    dbConnection.end()
+  })
 
 
 
-}
 
-async function getMetadata(){
-  try{
-    let sqlHost = await gcpMetadata.project('attributes/sql-host')
-    let sqlUser = await gcpMetadata.project('attributes/sql-user')
-    let sqlP = await gcpMetadata.project('attributes/sql-p')
-    let sqlDb = await gcpMetadata.project('attributes/sql-db')
-
-    const metadata = {
-      sqlHost: sqlHost,
-      sqlUser: sqlUser,
-      sqlP: sqlP,
-      sqlDb: sqlDb
-    };
-    console.log("Metadata fetched: " + JSON.stringify(metadata))
-    return metadata;  
-  }
-
-  catch(error){
-    console.log("Async/Await error: " + error)
-  }
+ 
   
 
-  
-}
 
 
 
 
-//DB connection
-/*
-const connection = mysql.createConnection({
-  host: 'your_database_host',
-  user: 'your_username',
-  password: 'your_password',
-  database: 'your_database_name'
-});
-
-connection.connect((error) => {
-  if (error) {
-    console.error('Error connecting to the database:', error);
-    return;
-  }
-  console.log('Connected to the database!');
-*/
-
-
-// Listen command 
 
 app.listen(PORT, HOST, () => {
   console.log(`Running on http://${HOST}:${PORT}`);
