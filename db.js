@@ -14,8 +14,7 @@
     }
     else {
         //get Metadata
-        const metadata = await getMetadata();
-        console.log("[[[Debugger]]] Logging metadata: " + JSON.stringify(metadata))
+        const metadata = await getMetadata();        
         //Establish connection
         dbConnection = mysql.createConnection({
             host: metadata.sqlHost,
@@ -40,7 +39,7 @@
         sqlP: sqlP,
         sqlDb: sqlDb
       };
-      console.log("Metadata fetched: " + JSON.stringify(metadata))
+      
       return metadata;  
     }
   
